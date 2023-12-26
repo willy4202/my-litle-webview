@@ -7,7 +7,7 @@ export class ScreenA extends React.Component {
       this.props.navigation.navigate("ScreenB", { value: "from A" });
     };
     const routeC = () => {
-      this.props.navigation.navigate("NestedNavigator");
+      this.props.navigation.navigate("NestedNavigator", { value: "from" });
     };
     return (
       <View>
