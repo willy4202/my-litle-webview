@@ -3,6 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { BottomTabNavigator } from "./src/BottomTabNavigator";
 import { ScreenB } from "./src/ScreenB";
+import { StyleSheet } from "react-native";
 
 const Stack = createNativeStackNavigator();
 export default function App() {
@@ -13,7 +14,7 @@ export default function App() {
           name="BottomTabNavigator"
           component={BottomTabNavigator}
         />
-        <Stack.Screen name="ScreenB" component={ScreenB} />
+        {/* <Stack.Screen name="ScreenB" component={ScreenB} /> */}
       </Stack.Navigator>
     </NavigationContainer>
   );
