@@ -9,6 +9,7 @@ const SingleLineTextInput = ({
   fontSize,
 }) => {
   const [focused, setFocused] = useState(false);
+
   return (
     <View
       style={{

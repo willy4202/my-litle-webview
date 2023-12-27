@@ -7,6 +7,7 @@ import Button from "../components/Button";
 import Typography from "../components/Typography";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Spacer from "../components/Spacer";
+import { useLinkList } from "../states/atomLinkList";
 
 const RegisterScreen = () => {
   const { bottom } = useSafeAreaInsets();
@@ -15,6 +16,20 @@ const RegisterScreen = () => {
     navigation.goBack();
   }, []);
   const [url, setUrl] = useState("");
+  const [link, setLink] = useLinkList();
+
+  const onPressSave = useCallback(() => {
+    setLink((prev) => [
+      ...prev,
+      {
+        title: "",
+        image: "",
+        link: url,
+        createdAt: new Date().toISOString(),
+      },
+    ]);
+    setUrl("");
+  }, [url]);
 
   return (
     <View style={{ flex: 1 }}>
@@ -36,7 +51,7 @@ const RegisterScreen = () => {
           placeholder={"https:example.com"}
         />
       </View>
-      <Button>
+      <Button onPress={onPressSave}>
         <View
           style={{
             backgroundColor: url === "" ? "gray" : "black",
