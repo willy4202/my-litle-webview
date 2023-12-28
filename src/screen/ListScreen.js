@@ -8,6 +8,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Icon from "../components/Icon";
 import { useLinkListValue } from "../states/atomLinkList";
 import Spacer from "../components/Spacer";
+import { removeItem } from "../util/asyncStorageUtils";
 
 const ListScreen = () => {
   const navigation = useNavigation();
@@ -19,6 +20,9 @@ const ListScreen = () => {
   }, []);
   const onPressAddButton = useCallback(() => {
     navigation.navigate("RegisterScreen");
+  }, []);
+  const onPressRemoveButton = useCallback(async () => {
+    await removeItem("MAIN_LINK_LIST");
   }, []);
 
   const renderItem = ({ item }) => {
@@ -54,6 +58,19 @@ const ListScreen = () => {
         <Button onPress={onPressAddButton}>
           <View style={styles.floatBtn}>
             <Icon name={"add"} color={"white"} size={32} />
+          </View>
+        </Button>
+      </View>
+      <View
+        style={{
+          position: "absolute",
+          left: 24,
+          bottom: 24 + safeAreaInset.bottom,
+        }}
+      >
+        <Button onPress={onPressRemoveButton}>
+          <View style={styles.floatBtn}>
+            <Icon name={"remove"} color={"white"} size={32} />
           </View>
         </Button>
       </View>

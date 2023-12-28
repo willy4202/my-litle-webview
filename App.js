@@ -9,7 +9,6 @@ import RootStackNavigation from "./src/navigations/RootStackNavigation";
 import { RecoilRoot } from "recoil";
 import RecoilCustomPersist from "./src/components/RecoilCustomPersist";
 
-const Stack = createNativeStackNavigator();
 export default function App() {
   return (
     <RecoilRoot>

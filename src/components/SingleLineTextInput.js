@@ -7,6 +7,7 @@ const SingleLineTextInput = ({
   placeholder,
   style,
   fontSize,
+  onSubmitEditing,
 }) => {
   const [focused, setFocused] = useState(false);
 
@@ -33,6 +34,7 @@ const SingleLineTextInput = ({
         onBlur={() => {
           setFocused(false);
         }}
+        onSubmitEditing={onSubmitEditing}
       />
     </View>
   );

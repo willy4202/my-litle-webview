@@ -1,13 +1,15 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, useWindowDimensions } from "react-native";
 import React, { useCallback, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import Header from "../components/Header/Header";
 import SingleLineTextInput from "../components/SingleLineTextInput";
 import Button from "../components/Button";
 import Typography from "../components/Typography";
+import RemoteImage from "../components/RemoteImage";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Spacer from "../components/Spacer";
 import { useLinkList } from "../states/atomLinkList";
+import { getOpenGraphData } from "../util/OpenGraphTagUtils";
 
 const RegisterScreen = () => {
   const { bottom } = useSafeAreaInsets();
@@ -17,6 +19,8 @@ const RegisterScreen = () => {
   }, []);
   const [url, setUrl] = useState("");
   const [link, setLink] = useLinkList();
+  const [metaData, setMetaData] = useState(null);
+  const { width } = useWindowDimensions();
 
   const onPressSave = useCallback(() => {
     setLink((prev) => [
@@ -31,6 +35,11 @@ const RegisterScreen = () => {
     setUrl("");
   }, [url]);
 
+  const onSubmitEditing = useCallback(async (url) => {
+    const result = await getOpenGraphData(url);
+    setMetaData(result);
+  }, []);
+
   return (
     <View style={{ flex: 1 }}>
       <Header>
@@ -41,15 +50,41 @@ const RegisterScreen = () => {
         style={{
           flex: 1,
           alignItems: "center",
-          justifyContent: "center",
+          justifyContent: "flex-start",
           paddingHorizontal: 24,
+          paddingVertical: 24,
         }}
       >
         <SingleLineTextInput
           value={url}
           onChangeText={setUrl}
           placeholder={"https:example.com"}
+          onSubmitEditing={() => {
+            onSubmitEditing(url);
+          }}
         />
+        {metaData !== null && (
+          <>
+            <Spacer height={12} />
+            <View style={{ borderWidth: 0.4, borderColor: "gray" }}>
+              <RemoteImage
+                uri={metaData.image}
+                width={width - 48}
+                height={width / 2}
+              />
+              <View style={{ padding: 12 }}>
+                <Spacer height={10} />
+                <Typography fontSize={20} color={"black"}>
+                  {metaData.title}
+                </Typography>
+                <Spacer height={6} />
+                <Typography fontSize={16} color={"gray"}>
+                  {metaData.description}
+                </Typography>
+              </View>
+            </View>
+          </>
+        )}
       </View>
       <Button onPress={onPressSave}>
         <View
