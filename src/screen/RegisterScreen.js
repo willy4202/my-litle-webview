@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, useWindowDimensions } from "react-native";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import Header from "../components/Header/Header";
 import SingleLineTextInput from "../components/SingleLineTextInput";
@@ -10,6 +10,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Spacer from "../components/Spacer";
 import { useLinkList } from "../states/atomLinkList";
 import { getOpenGraphData } from "../util/OpenGraphTagUtils";
+import { getClipboardString } from "../util/ClipboardUtils";
 
 const RegisterScreen = () => {
   const { bottom } = useSafeAreaInsets();
@@ -26,8 +27,9 @@ const RegisterScreen = () => {
     setLink((prev) => [
       ...prev,
       {
-        title: "",
-        image: "",
+        title: metaData.title,
+        image: metaData.image,
+
         link: url,
         createdAt: new Date().toISOString(),
       },
@@ -38,6 +40,25 @@ const RegisterScreen = () => {
   const onSubmitEditing = useCallback(async (url) => {
     const result = await getOpenGraphData(url);
     setMetaData(result);
+  }, []);
+
+  const onGetClipboardString = useCallback(async () => {
+    const result = await getClipboardString();
+    const openGraph = await getOpenGraphData(result);
+    console.log(
+      "🚀 ~ file: RegisterScreen.js:48 ~ onGetClipboardString ~ openGraph:",
+      openGraph
+    );
+    setUrl(result);
+    setMetaData({
+      title: openGraph.title,
+      description: openGraph.description,
+      image: openGraph.image,
+    });
+  }, []);
+
+  useEffect(() => {
+    onGetClipboardString();
   }, []);
 
   return (
