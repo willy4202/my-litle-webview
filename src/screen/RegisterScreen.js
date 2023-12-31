@@ -1,4 +1,10 @@
-import { StyleSheet, Text, View, useWindowDimensions } from "react-native";
+import {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  View,
+  useWindowDimensions,
+} from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import Header from "../components/Header/Header";
@@ -21,6 +27,7 @@ const RegisterScreen = () => {
   const [url, setUrl] = useState("");
   const [link, setLink] = useLinkList();
   const [metaData, setMetaData] = useState(null);
+  const [loading, setLoading] = useState(false);
   const { width } = useWindowDimensions();
 
   const onPressSave = useCallback(() => {
@@ -38,17 +45,16 @@ const RegisterScreen = () => {
   }, [url]);
 
   const onSubmitEditing = useCallback(async (url) => {
+    setLoading(true);
     const result = await getOpenGraphData(url);
     setMetaData(result);
+    setLoading(false);
   }, []);
 
   const onGetClipboardString = useCallback(async () => {
     const result = await getClipboardString();
     const openGraph = await getOpenGraphData(result);
-    console.log(
-      "🚀 ~ file: RegisterScreen.js:48 ~ onGetClipboardString ~ openGraph:",
-      openGraph
-    );
+
     setUrl(result);
     setMetaData({
       title: openGraph.title,
@@ -70,7 +76,7 @@ const RegisterScreen = () => {
       <View
         style={{
           flex: 1,
-          alignItems: "center",
+
           justifyContent: "flex-start",
           paddingHorizontal: 24,
           paddingVertical: 24,
@@ -84,6 +90,30 @@ const RegisterScreen = () => {
             onSubmitEditing(url);
           }}
         />
+        {loading && (
+          <>
+            <Spacer height={12} />
+            <View
+              style={{ borderWidth: 1, borderRadius: 4, borderColor: "gray" }}
+            >
+              <Spacer height={(width - 48) / 2} />
+              <Spacer height={50} />
+              <View
+                style={{
+                  position: "absolute",
+                  left: 0,
+                  right: 0,
+                  top: 0,
+                  bottom: 0,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <ActivityIndicator />
+              </View>
+            </View>
+          </>
+        )}
         {metaData !== null && (
           <>
             <Spacer height={12} />
